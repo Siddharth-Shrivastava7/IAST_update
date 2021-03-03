@@ -26,7 +26,7 @@ The divergence between labeled training data and unlabeled testing data is a sig
 - cuda == 9.2
 - gcc == 7.4.0
 - pip==19.0.3
-- cudnn - 7.1.4 
+- cudnn == 7.1.4 
  
 Install python packages
 ```
