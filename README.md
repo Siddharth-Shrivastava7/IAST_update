@@ -21,9 +21,12 @@ The divergence between labeled training data and unlabeled testing data is a sig
 ## Setup
 
 ### 1) Envs
-- Pytorch >= 1.0
-- Python >= 3.6
-- cuda >= 9.0
+- Pytorch == 1.7.1
+- Python == 3.7.9
+- cuda == 9.2
+- gcc == 7.4.0
+- pip==19.0.3
+- cudnn - 7.1.4 
  
 Install python packages
 ```
