@@ -19,6 +19,7 @@ from ..datasets.loader.gtav_dataset import GTAVDataset
 from ..datasets.loader.cityscapes_dataset import CityscapesDataset
 from ..datasets.loader.synthia_dataset import SYNTHIADataset
 from ..datasets.loader.bdd_dataset import BDDDataset
+from ..datasets.loader.darkzurich_dataset import DarkzurichDataset
 from ..datasets.metrics.miou import mean_iou, get_hist, intersectionAndUnionGPU
 from ..datasets.metrics.acc import acc, acc_with_hist
 
@@ -98,7 +99,7 @@ def train_net(net,
     if cfg.DATASET.TARGET.ANNS != '':
         t_anns = cfg.DATASET.TARGET.ANNS
         t_image_dir = cfg.DATASET.TARGET.IMAGEDIR
-        t_train = DATASET[cfg.DATASET.TARGET.TYPE](t_anns, t_image_dir, use_aug=use_aug)
+        t_train = DATASET[cfg.DATASET.TARGET.TYPE](t_anns, t_image_dir, use_aug=use_aug, target=True)
         t_train_sampler = DistributedSampler(t_train, num_replicas=cfg.TRAIN.N_PROC_PER_NODE, rank=gpu)
         t_train_data = DataLoader(t_train, cfg.TRAIN.BATCHSIZE, sampler=t_train_sampler, num_workers=cfg.DATASET.NUM_WORKER, drop_last=True, pin_memory=True)
         target_iter = iter(t_train_data)

@@ -19,14 +19,22 @@ def get_path(image_dir, label_dir, image_suffix, label_suffix):
     return datas, labels
 
 
-def read_anns(anns, image_dir):
+def read_anns(anns, image_dir, target):
     '''
     read images and labels, return image_list and label_list (file path)
     '''
-    with open(anns, 'r') as f:
-        res = json.loads(f.read())
-    datas = [ os.path.join(image_dir, x['image_name']) for x in res]
-    labels = [ os.path.join(image_dir, x['mask_name']) for x in res]
+    if target:
+        with open(anns, 'r') as f:
+            res = json.loads(f.read())
+        datas = [os.path.join(image_dir, x['image_name']) for x in res]
+        labels = []
+    
+    else:
+        with open(anns, 'r') as f:
+            res = json.loads(f.read())
+        datas = [ os.path.join(image_dir, x['image_name']) for x in res]
+        labels = [ os.path.join(image_dir, x['mask_name']) for x in res]
+    
     return datas, labels
 
 def transform_mask(label, threshold=100):
@@ -45,7 +53,7 @@ def transform_mask(label, threshold=100):
         res[res > threshold] = 1
     return res
 
-def trans(image, label, normalize):
+def trans(image, label, normalize, target):
     '''
     input: numpy.narray
     '''
@@ -55,7 +63,10 @@ def trans(image, label, normalize):
             normalize["mean"],
             normalize["std"]
             )(image_out)
-    lable_out = torch.from_numpy(label)
+    if target:
+        lable_out = _
+    else:
+        lable_out = torch.from_numpy(label)
     return image_out, lable_out
 
 def resize_img(img_pil, scale, type, resize_size):

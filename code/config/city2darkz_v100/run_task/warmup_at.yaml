@@ -1,0 +1,46 @@
+MODEL:
+  TYPE: "UDA_Segmentor"
+  BACKBONE:
+    TYPE: "R-DL-101-C1-C5-FREEZEBN"
+    PRETRAINED: True
+  DECODER:
+    TYPE: "DeepLabV2Dedoder"
+  PREDICTOR:
+    TYPE: "UpsamplePredictor"
+    NUM_CLASSES: 19
+    LOSS: "CrossEntropy"
+  DISCRIMINATOR:
+    TYPE: ["Origin-Predictor",]
+    WEIGHT: [0.05,]
+    LR: [0.00002]
+    LOSS: "MSELoss"
+TRAIN:
+  ITER_VAL: 400
+  EPOCHES: 4
+  OPTIMIZER: "Adam"
+  LR: 0.00002
+  BATCHSIZE: 4
+  ITER_REPORT: 100
+  SCHEDULER: "CosineAnnealingLR_with_Restart"
+  COSINEANNEALINGLR:
+    T_MAX: 4
+    T_MULT: 1.0
+  SAVE_ALL: False
+  N_PROC_PER_NODE: 1
+DATASET:
+  TYPE: "MsCityscapesDataset"
+  ANNS: "../data/cityscapes_train2.json"
+  IMAGEDIR: "../../scratch/data/cityscapes"
+  USE_AUG: True
+  VAL:
+    TYPE: "DarkzurichDataset"
+    ANNS: "../data/darkzurich_val.json"
+    IMAGEDIR: "../../scratch/data/dark_zurich_val"
+    RESIZE_SIZE: [1280, 640]
+  TARGET:
+    TYPE: "MsDarkzurichDataset"
+    ANNS: "../data/darkzurich_train.json"
+    IMAGEDIR: "../../scratch/data/dark_zurich"
+TEST:
+  RESIZE_SIZE: [[1280, 640]]
+WORK_DIR: "./v100_log/cityscapes/task1/warmup_at"

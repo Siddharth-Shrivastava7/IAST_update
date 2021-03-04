@@ -1,5 +1,5 @@
+opencv-python==4.2.0.34
 albumentations
-opencv-python
 numpy
 yacs
 Pillow
