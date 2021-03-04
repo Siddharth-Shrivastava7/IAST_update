@@ -12,7 +12,7 @@ class DarkzurichDataset(BaseDataset):
     # overwrite
     def aug(self, image, label):
         target = self.target
-        return crop_aug(image, label, 512, 1024,target, min_max_height=(900, 1000), w2h_ratio=2)
+        return crop_aug(image, label, 512, 1024,target, min_max_height=(800, 950), w2h_ratio=2)
 
 @DATASET.register("MsDarkzurichDataset")
 class MsDarkzurichDataset(BaseDataset):
@@ -23,4 +23,4 @@ class MsDarkzurichDataset(BaseDataset):
     # overwrite
     def aug(self, image, label):
         target = self.target
-        return crop_aug(image, label, 512, 1024,target, min_max_height=(341, 1000), w2h_ratio=2)
+        return crop_aug(image, label, 512, 1024,target, min_max_height=(341, 950), w2h_ratio=2)
