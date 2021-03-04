@@ -60,11 +60,11 @@ class BaseDataset(Dataset):
             im = Image.open(im)
             size = im.size
             im = np.array(im, dtype=np.uint8)
-            label = _
+            label = []
             if self.usd_aug:  
-                augmented = self.aug(im, label, target) #changed
+                augmented = self.aug(im, label) #changed
                 im = augmented['image'] 
-            im, label = self.transforms(im, label, self.normalize, target)   #changed
+            im, label = self.transforms(im, label, self.normalize, self.target)   #changed
 
 
         else:

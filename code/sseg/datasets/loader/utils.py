@@ -64,7 +64,7 @@ def trans(image, label, normalize, target):
             normalize["std"]
             )(image_out)
     if target:
-        lable_out = _
+        lable_out = []
     else:
         lable_out = torch.from_numpy(label)
     return image_out, lable_out
