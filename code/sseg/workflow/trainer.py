@@ -27,6 +27,7 @@ from ..models.losses.ranger import Ranger
 from ..models.losses.cos_annealing_with_restart import CosineAnnealingLR_with_Restart
 from ..models.registry import DATASET
 
+from tensorboardX import SummaryWriter
 import os
 import logging
 import time
@@ -35,6 +36,8 @@ import random
 import pickle
 import pdb
 import sys
+
+writer = SummaryWriter("../../saved_models/IAST_update_runs")
 
 def seed_everything(seed=888):
    random.seed(seed)
@@ -161,6 +164,8 @@ def train_net(net,
         resume_iter = 0
         result = []
     
+    best_val_epoch_loss = float('inf')
+
     # apex
     net, optimizers = amp.initialize(net, optimizers, opt_level=cfg.TRAIN.APEX_OPT)
     for i, (name, optim) in enumerate(D_optimizer_dict.items()):
@@ -256,6 +261,9 @@ def train_net(net,
             eta = itv2time(iter_report_time * (expect_iter - iter_cnt) / cfg.TRAIN.ITER_REPORT)
             
             if cfg.MODEL.TYPE == "UDA_Segmentor":
+                
+                writer.add_scalars('Iteration_loss',{'mask_loss':log_total_loss['mask_loss'], 'Discriminator_loss': log_total_loss['D_Origin-Predictor_loss']}, iter_cnt)
+
                 logger.info('eta: {}, epoch: {}, iter: {} , time: {:.3f} s/iter, lr: {:.2e}, D_lr: {:.2e}'
                         .format(eta, epoch + 1, iter_cnt, iter_report_time/cfg.TRAIN.ITER_REPORT, optimizer.param_groups[-1]['lr'], list(D_optimizer_dict.values())[0].param_groups[-1]['lr'] if D_optimizer_dict else 0 )  + print_loss_dict(log_total_loss, cfg.TRAIN.ITER_REPORT))
             else:
@@ -310,7 +318,8 @@ def train_net(net,
             # save
             if gpu == 0:    
                 # save model
-                if cfg.TRAIN.SAVE_ALL:
+                if cfg.TRAIN.SAVE_ALL and (valid_epoch_loss < best_val_epoch_loss) :
+                    valid_epoch_loss = best_val_iter_loss
                     torch.save(net.state_dict(), os.path.join(dir_cp, 'CP{}_{}.pth'.format(epoch + 1, iter_cnt)))      
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'last_iter.pth'))
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'epoch_{}.pth'.format(epoch + 1)))
@@ -328,7 +337,9 @@ def train_net(net,
 
     if gpu == 0:
         logger.info('End! epoch{} max metrics: {:.4f}'.format(max_metrics_epoch, max_metrics))
-        
+
+writer.close()
+
 def build_optimizer(model, cfg):
     optimizer = cfg.TRAIN.OPTIMIZER
     lr = cfg.TRAIN.LR

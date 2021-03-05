@@ -1,4 +1,4 @@
-BASE_WORK_DIR="../../saved_models/IAST"
+BASE_WORK_DIR="../../saved_models/IAST_update"
 
 # source only
 # python main.py --config_file config/city2darkz_v100/run_task/source_only.yaml --work_dir ${BASE_WORK_DIR}/source_only

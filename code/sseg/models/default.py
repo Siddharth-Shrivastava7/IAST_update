@@ -49,7 +49,7 @@ _C.TRAIN.N_PROC_PER_NODE = 1
 
 _C.TRAIN.APEX_OPT = 'O1' # Apex option 'O0'/'O1'/'O2'/'O3'
 _C.TRAIN.EARLY_STOPPING = -1
-_C.TRAIN.SAVE_ALL = False
+_C.TRAIN.SAVE_ALL = True
 _C.TRAIN.RESUME_FROM = '' # for continuing training
 _C.TRAIN.PSEUDO_RESUME_FROM = '' # for generating pseudo-labels
 
