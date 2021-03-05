@@ -39,7 +39,8 @@ class UDASegmentor(nn.Module):
     def forward(self, source, target=None, source_label=None, source_label_onehot=None, target_label=None, target_label_onehot=None):
         # source domain
         if not self.training or self.cfg.MODEL.DISCRIMINATOR.WEIGHT or self.cfg.DATASET.TARGET.SOURCE_LOSS_WEIGHT>0:
-            s_features = self.backbone(source)
+            domain_label = 0 #dsbn
+            s_features = self.backbone(source, domain_label)
             s_decoder_out = self.decoder(s_features)
             if isinstance(s_decoder_out, tuple):
                 s_decoder_fm = s_decoder_out[1]
@@ -53,7 +54,8 @@ class UDASegmentor(nn.Module):
 
         if self.training:
             # target domain
-            t_features = self.backbone(target)
+            domain_label = 1 #dsbn
+            t_features = self.backbone(target, domain_label)
             t_decoder_out = self.decoder(t_features)
             if isinstance(t_decoder_out, tuple):
                 t_decoder_fm = t_decoder_out[1]

@@ -19,7 +19,7 @@ TRAIN:
   EPOCHES: 4
   OPTIMIZER: "Adam"
   LR: 0.00002
-  BATCHSIZE: 4
+  BATCHSIZE: 2 # reduced
   ITER_REPORT: 100
   SCHEDULER: "CosineAnnealingLR_with_Restart"
   COSINEANNEALINGLR:

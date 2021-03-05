@@ -4,6 +4,16 @@ from torch.utils.model_zoo import load_url as load_state_dict_from_url
 from ..ops.ibn import IBN
 from ..registry import BACKBONE
 
+import torch.nn.functional as F
+from ..modules.DSBN import DomainSpecificBatchNorm2d
+from torch.nn.modules.conv import _ConvNd
+from torch.nn.modules.utils import _ntuple  
+from collections import OrderedDict
+import operator
+from itertools import islice 
+
+_pair = _ntuple(2) 
+
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
     'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
@@ -24,6 +34,78 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
     return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+
+# Requirement for DSBN
+
+class Conv2d(_ConvNd):
+    def __init__(self, in_channels, out_channels, kernel_size, stride=1,
+                 padding=0, dilation=1, groups=1, bias=True):
+        kernel_size = _pair(kernel_size)
+        stride = _pair(stride)
+        padding = _pair(padding)
+        dilation = _pair(dilation)
+        super(Conv2d, self).__init__(
+            in_channels, out_channels, kernel_size, stride, padding, dilation,
+            False, _pair(0), groups, bias, padding_mode='zeros')
+
+    def forward(self, input, domain_label):
+        return F.conv2d(input, self.weight, self.bias, self.stride,
+                        self.padding, self.dilation, self.groups)
+
+
+class TwoInputSequential(nn.Module):
+    r"""A sequential container forward with two inputs.
+    """
+
+    def __init__(self, *args):
+        super(TwoInputSequential, self).__init__()
+        if len(args) == 1 and isinstance(args[0], OrderedDict):
+            for key, module in args[0].items():
+                self.add_module(key, module)
+        else:
+            for idx, module in enumerate(args):
+                self.add_module(str(idx), module)
+
+    def _get_item_by_idx(self, iterator, idx):
+        """Get the idx-th item of the iterator"""
+        size = len(self)
+        idx = operator.index(idx)
+        if not -size <= idx < size:
+            raise IndexError('index {} is out of range'.format(idx))
+        idx %= size
+        return next(islice(iterator, idx, None))
+
+    def __getitem__(self, idx):
+        if isinstance(idx, slice):
+            return TwoInputSequential(OrderedDict(list(self._modules.items())[idx]))
+        else:
+            return self._get_item_by_idx(self._modules.values(), idx)
+
+    def __setitem__(self, idx, module):
+        key = self._get_item_by_idx(self._modules.keys(), idx)
+        return setattr(self, key, module)
+
+    def __delitem__(self, idx):
+        if isinstance(idx, slice):
+            for key in list(self._modules.keys())[idx]:
+                delattr(self, key)
+        else:
+            key = self._get_item_by_idx(self._modules.keys(), idx)
+            delattr(self, key)
+
+    def __len__(self):
+        return len(self._modules)
+
+    def __dir__(self):
+        keys = super(TwoInputSequential, self).__dir__()
+        keys = [key for key in keys if not key.isdigit()]
+        return keys
+
+    def forward(self, input1, input2):
+        for module in self._modules.values():
+            input1 = module(input1, input2)
+        return input1
+
 
 
 class BasicBlock(nn.Module):
@@ -48,18 +130,18 @@ class BasicBlock(nn.Module):
         self.downsample = downsample
         self.stride = stride
 
-    def forward(self, x):
+    def forward(self, x, domain_label):
         identity = x
 
         out = self.conv1(x)
-        out = self.bn1(out)
+        out = self.bn1(out, domain_label)
         out = self.relu(out)
 
         out = self.conv2(out)
-        out = self.bn2(out)
+        out = self.bn2(out, domain_label)
 
         if self.downsample is not None:
-            identity = self.downsample(x)
+            identity = self.downsample(x, domain_label)
 
         out += identity
         out = self.relu(out)
@@ -79,16 +161,16 @@ class Bottleneck(nn.Module):
         # Both self.conv2 and self.downsample layers downsample the input when stride != 1
         self.conv1 = conv1x1(inplanes, width)
         self.bn1 = norm_layer(width)
-        for i in self.bn1.parameters():
-            i.requires_grad = False
+        # for i in self.bn1.parameters():   #bn is unfreezed now
+        #     i.requires_grad = False
         self.conv2 = conv3x3(width, width, stride, groups, dilation)
         self.bn2 = norm_layer(width)
-        for i in self.bn2.parameters():
-            i.requires_grad = False
+        # for i in self.bn2.parameters():   #bn is unfreezed now
+        #     i.requires_grad = False
         self.conv3 = conv1x1(width, planes * self.expansion)
         self.bn3 = norm_layer(planes * self.expansion)
-        for i in self.bn3.parameters():
-            i.requires_grad = False
+        # for i in self.bn3.parameters():   #bn is unfreezed now
+        #     i.requires_grad = False
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -96,22 +178,22 @@ class Bottleneck(nn.Module):
         if self.with_ibn:
             self.ibnc = IBN(width)
 
-    def forward(self, x):
+    def forward(self, x, domain_label): # changes for dsbn 
         identity = x
 
         out = self.conv1(x)
-        out = self.bn1(out) if not self.with_ibn else self.ibnc(out)
+        out = self.bn1(out, domain_label) if not self.with_ibn else self.ibnc(out)
         out = self.relu(out)
 
         out = self.conv2(out)
-        out = self.bn2(out)
+        out = self.bn2(out, domain_label)
         out = self.relu(out)
 
         out = self.conv3(out)
-        out = self.bn3(out)
+        out = self.bn3(out, domain_label)
 
         if self.downsample is not None:
-            identity = self.downsample(x)
+            identity = self.downsample(x, domain_label)
 
         out += identity
         out = self.relu(out)
@@ -119,7 +201,7 @@ class Bottleneck(nn.Module):
         return out
 
 
-class ResNet(nn.Module):
+class ResNet(nn.Module): # add dsbn 
     def __init__(self, block, layers, num_classes=1000, zero_init_residual=False,
                  groups=1, width_per_group=64, replace_stride_with_dilation=None,
                  norm_layer=None, with_ibn=False, freeze_bn=False):
@@ -142,8 +224,8 @@ class ResNet(nn.Module):
         self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
                                bias=False)
         self.bn1 = norm_layer(self.inplanes)
-        for i in self.bn1.parameters():
-            i.requires_grad = False
+        # for i in self.bn1.parameters(): #bn is unfreezed now
+        #     i.requires_grad = False
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
         self.layer1 = self._make_layer(block, 64, layers[0], ibn=with_ibn)
@@ -188,12 +270,17 @@ class ResNet(nn.Module):
             self.dilation *= stride
             stride = 1
         if stride != 1 or self.inplanes != planes * block.expansion:
-            downsample = nn.Sequential(
-                conv1x1(self.inplanes, planes * block.expansion, stride),
-                norm_layer(planes * block.expansion),
-            )
-        for i in downsample._modules['1'].parameters():
-            i.requires_grad = False
+            # downsample = nn.Sequential(
+            #     Conv2d(self.inplanes, planes * block.expansion, stride),
+            #     norm_layer(planes * block.expansion),
+            # )
+            downsample =  TwoInputSequential(
+                Conv2d(self.inplanes, planes * block.expansion,
+                       kernel_size=1, stride=stride, bias=False),
+                norm_layer(planes * block.expansion))
+
+        # for i in downsample._modules['1'].parameters(): #bn is unfreezed now
+        #     i.requires_grad = False
 
         layers = []
         if ibn:
@@ -206,26 +293,27 @@ class ResNet(nn.Module):
                                 base_width=self.base_width, dilation=self.dilation,
                                 norm_layer=norm_layer, ibn=ibn))
 
-        return nn.Sequential(*layers)
+        # return nn.Sequential(*layers)
+        return TwoInputSequential(*layers)
 
-    def forward(self, x):
+    def forward(self, x, domain_label):
         x = self.conv1(x)
-        x = self.bn1(x)
+        x = self.bn1(x, domain_label)
         x = self.relu(x)
         outs = []
         outs.append(x)          # 1/2
         x = self.maxpool(x)
         
-        x = self.layer1(x)
+        x = self.layer1(x, domain_label)
         outs.append(x)          # 1/4
 
-        x = self.layer2(x)
+        x = self.layer2(x, domain_label)
         outs.append(x)          # 1/8
 
-        x = self.layer3(x)
+        x = self.layer3(x, domain_label)
         outs.append(x)          # 1/16
 
-        x = self.layer4(x)
+        x = self.layer4(x, domain_label)
         outs.append(x)          # 1/32
 
         # x = self.avgpool(x)
@@ -239,16 +327,63 @@ def _resnet(arch, block, layers, pretrained, progress, with_ibn, replace_stride_
     model = ResNet(block, layers, 
                     with_ibn=with_ibn, 
                     replace_stride_with_dilation=replace_stride_with_dilation,
-                    freeze_bn=freeze_bn,
+                    freeze_bn=freeze_bn,norm_layer=DomainSpecificBatchNorm2d, 
                     **kwargs)
     if pretrained:
-        state_dict = load_state_dict_from_url(model_urls[arch],
-                                              progress=progress)
-        model_dict = model.state_dict()
-        pretrained_dict = {k: v for k, v in state_dict.items() if k in model_dict}
-        model_dict.update(pretrained_dict)
-        model.load_state_dict(model_dict)
+        # state_dict = load_state_dict_from_url(model_urls[arch],
+        #                                       progress=progress)
+        # model_dict = model.state_dict()
+        # pretrained_dict = {k: v for k, v in state_dict.items() if k in model_dict}
+        # model_dict.update(pretrained_dict)
+        # model.load_state_dict(model_dict, strict=False)
+
+        updated_state_dict = _update_initial_weights_dsbn(load_state_dict_from_url(model_urls[arch],
+                                                        progress=progress))
+        model.load_state_dict(updated_state_dict, strict=False)
+
     return model
+
+def _update_initial_weights_dsbn(state_dict, num_classes=1000, num_domains=2, dsbn_type='all'):
+    new_state_dict = state_dict.copy()
+
+    for key, val in state_dict.items():
+        update_dict = False
+        if ((('bn' in key or 'downsample.1' in key) and dsbn_type == 'all') or
+                (('bn1' in key) and dsbn_type == 'partial-bn1')):
+            update_dict = True
+
+        if (update_dict):
+            if 'weight' in key:
+                for d in range(num_domains):
+                    new_state_dict[key[0:-6] + 'bns.{}.weight'.format(d)] = val.data.clone()
+
+            elif 'bias' in key:
+                for d in range(num_domains):
+                    new_state_dict[key[0:-4] + 'bns.{}.bias'.format(d)] = val.data.clone()
+
+            if 'running_mean' in key:
+                for d in range(num_domains):
+                    new_state_dict[key[0:-12] + 'bns.{}.running_mean'.format(d)] = val.data.clone()
+
+            if 'running_var' in key:
+                for d in range(num_domains):
+                    new_state_dict[key[0:-11] + 'bns.{}.running_var'.format(d)] = val.data.clone()
+
+            if 'num_batches_tracked' in key:
+                for d in range(num_domains):
+                    new_state_dict[
+                        key[0:-len('num_batches_tracked')] + 'bns.{}.num_batches_tracked'.format(d)] = val.data.clone()
+
+    if num_classes != 1000 or len([key for key in new_state_dict.keys() if 'fc' in key]) > 1:
+        key_list = list(new_state_dict.keys())
+        for key in key_list:
+            if 'fc' in key:
+                print('pretrained {} are not used as initial params.'.format(key))
+                del new_state_dict[key]
+
+    return new_state_dict
+
+
 
 # -----------------------------------------------------------------------------
 #  ResNet 
@@ -321,7 +456,7 @@ def build_resnet50_aspp(pretrained=False, progress=True, with_ibn=False,**kwargs
                     replace_stride_with_dilation=[False, True, True],
                     **kwargs)
 
-@BACKBONE.register("R-DL-101-C1-C5-FREEZEBN")
+@BACKBONE.register("R-DL-101-C1-C5-FREEZEBN")  #this one 
 def build_resnet101_aspp(pretrained=False, progress=True, with_ibn=False,**kwargs):
     return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress, with_ibn, 
                     replace_stride_with_dilation=[False, True, True],
