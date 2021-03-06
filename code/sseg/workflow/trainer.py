@@ -318,7 +318,7 @@ def train_net(net,
             # save
             if gpu == 0:    
                 # save model
-                if cfg.TRAIN.SAVE_ALL and (valid_epoch_loss < best_val_epoch_loss) :
+                if cfg.TRAIN.SAVE_ALL:
                     valid_epoch_loss = best_val_iter_loss
                     torch.save(net.state_dict(), os.path.join(dir_cp, 'CP{}_{}.pth'.format(epoch + 1, iter_cnt)))      
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'last_iter.pth'))
