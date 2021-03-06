@@ -113,6 +113,7 @@ def train_net(net,
     val = DATASET[cfg.DATASET.VAL.TYPE](val_anns, val_image_dir)
     val_sampler = DistributedSampler(val, num_replicas=cfg.TRAIN.N_PROC_PER_NODE, rank=gpu)
     val_data = DataLoader(val, cfg.TEST.BATCH_SIZE, sampler=val_sampler, num_workers=cfg.DATASET.NUM_WORKER, pin_memory=True)
+    # print(len(val_data))
 
     n_train = len(train_data) * cfg.TRAIN.BATCHSIZE
     expect_iter = n_train * cfg.TRAIN.EPOCHES //cfg.TRAIN.BATCHSIZE
@@ -164,7 +165,6 @@ def train_net(net,
         resume_iter = 0
         result = []
     
-    best_val_epoch_loss = float('inf')
 
     # apex
     net, optimizers = amp.initialize(net, optimizers, opt_level=cfg.TRAIN.APEX_OPT)
@@ -281,7 +281,7 @@ def train_net(net,
                     labels = b[1].type(torch.LongTensor).cuda(non_blocking=True)
 
                     tmp_images = F.interpolate(images, val_resize_size[::-1], mode='bilinear', align_corners=True)
-                    logits = net(tmp_images)
+                    logits = net(target=tmp_images)
                     logits = F.interpolate(logits, labels.size()[1:], mode='bilinear', align_corners=True)
 
                     label_pred = logits.max(dim=1)[1]
@@ -319,7 +319,6 @@ def train_net(net,
             if gpu == 0:    
                 # save model
                 if cfg.TRAIN.SAVE_ALL:
-                    valid_epoch_loss = best_val_iter_loss
                     torch.save(net.state_dict(), os.path.join(dir_cp, 'CP{}_{}.pth'.format(epoch + 1, iter_cnt)))      
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'last_iter.pth'))
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'epoch_{}.pth'.format(epoch + 1)))

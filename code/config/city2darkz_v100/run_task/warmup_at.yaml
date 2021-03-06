@@ -36,7 +36,7 @@ DATASET:
     TYPE: "DarkzurichDataset"
     ANNS: "../data/darkzurich_val.json"
     IMAGEDIR: "../../scratch/data/dark_zurich_val"
-    RESIZE_SIZE: [1280, 640]
+    RESIZE_SIZE: [1920, 1080] # original
   TARGET:
     TYPE: "MsDarkzurichDataset"
     ANNS: "../data/darkzurich_train.json"

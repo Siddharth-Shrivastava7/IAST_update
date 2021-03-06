@@ -49,7 +49,7 @@ _C.TRAIN.N_PROC_PER_NODE = 1
 
 _C.TRAIN.APEX_OPT = 'O1' # Apex option 'O0'/'O1'/'O2'/'O3'
 _C.TRAIN.EARLY_STOPPING = -1
-_C.TRAIN.SAVE_ALL = True
+_C.TRAIN.SAVE_ALL = False
 _C.TRAIN.RESUME_FROM = '' # for continuing training
 _C.TRAIN.PSEUDO_RESUME_FROM = '' # for generating pseudo-labels
 
@@ -107,7 +107,7 @@ _C.DATASET.TARGET.ORIGIN_SIZE = [1920, 1080] # WH
 _C.TEST = CN()
 _C.TEST.RESIZE_SIZE = [] # multi scale test eg. [[1024, 512], [1536, 768], [2048, 1024]]
 _C.TEST.USE_FLIP = False
-_C.TEST.BATCH_SIZE = 2
+_C.TEST.BATCH_SIZE = 1
 _C.TEST.NUM_WORKER = 2
 _C.TEST.N_PROC_PER_NODE = 1
 
