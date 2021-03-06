@@ -15,7 +15,7 @@ MODEL:
     LR: [0.00002]
     LOSS: "MSELoss"
 TRAIN:
-  ITER_VAL: 400
+  ITER_VAL: 600
   EPOCHES: 10
   OPTIMIZER: "Adam"
   LR: 0.00002

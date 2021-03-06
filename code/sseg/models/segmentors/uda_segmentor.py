@@ -36,7 +36,7 @@ class UDASegmentor(nn.Module):
         self.discriminator_loss = build_loss(cfg, is_discriminator=True)
         self.softmax = nn.Softmax(dim=1)
 
-    def forward(self, source=None, target=None, source_label=None, source_label_onehot=None, target_label=None, target_label_onehot=None):
+    def forward(self, source=None, target=None, source_label=None, source_label_onehot=None, target_label=None, target_label_onehot=None, valid = False):
         # source domain
         # if not self.training or self.cfg.MODEL.DISCRIMINATOR.WEIGHT or self.cfg.DATASET.TARGET.SOURCE_LOSS_WEIGHT>0:
         if source != None:
@@ -68,6 +68,8 @@ class UDASegmentor(nn.Module):
                 t_decoder_fm = [t_decoder_fm]
             t_logits = self.predictor(t_decoder_out, target)
             t_logits_softmax = self.softmax(t_logits)
+            if valid:
+                return t_logits_softmax
             del t_decoder_out
             
             # defaut reg_weight

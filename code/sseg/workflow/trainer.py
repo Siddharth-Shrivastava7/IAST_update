@@ -281,7 +281,7 @@ def train_net(net,
                     labels = b[1].type(torch.LongTensor).cuda(non_blocking=True)
 
                     tmp_images = F.interpolate(images, val_resize_size[::-1], mode='bilinear', align_corners=True)
-                    logits = net(target=tmp_images)
+                    logits = net(target=tmp_images, valid=True)
                     logits = F.interpolate(logits, labels.size()[1:], mode='bilinear', align_corners=True)
 
                     label_pred = logits.max(dim=1)[1]
