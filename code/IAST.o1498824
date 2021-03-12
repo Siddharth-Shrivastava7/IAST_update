@@ -1,0 +1,325 @@
+===============================
+1498824.pbshpc
+vsky025.hpc.iitd.ac.in
+===============================
+/home/cse/phd/anz208849/IAST_update/code
+pretrained fc.weight are not used as initial params.
+pretrained fc.bias are not used as initial params.
+pretrained fc.weight are not used as initial params.
+pretrained fc.bias are not used as initial params.
+Selected optimization level O1:  Insert automatic casts around Pytorch functions and Tensor methods.
+
+Defaults for this optimization level are:
+enabled                : True
+opt_level              : O1
+cast_model_type        : None
+patch_torch_functions  : True
+keep_batchnorm_fp32    : None
+master_weights         : None
+loss_scale             : dynamic
+Processing user overrides (additional kwargs that are not None)...
+After processing overrides, optimization options are:
+enabled                : True
+opt_level              : O1
+cast_model_type        : None
+patch_torch_functions  : True
+keep_batchnorm_fp32    : None
+master_weights         : None
+loss_scale             : dynamic
+Warning:  multi_tensor_applier fused unscale kernel is unavailable, possibly because apex was installed without --cuda_ext --cpp_ext. Using Python fallback.  Original ImportError was: ImportError('/home/cse/phd/anz208849/anaconda3/envs/IAST/lib/python3.7/site-packages/amp_C.cpython-37m-x86_64-linux-gnu.so: undefined symbol: _ZN3c104cuda12device_countEv')
+DATASET:
+  ANNS: ../data/cityscapes_train2.json
+  IMAGEDIR: ../../scratch/data/cityscapes
+  NUM_WORKER: 2
+  RESIZE_SIZE: []
+  TARGET:
+    ANNS: ../data/darkzurich_train.json
+    IMAGEDIR: ../../scratch/data/dark_zurich
+    ORIGIN_SIZE: [1920, 1080]
+    PSEUDO_BATCH_SIZE: 2
+    PSEUDO_LOSS_WEIGHT: 1.0
+    PSEUDO_PL: IAST
+    PSEUDO_PL_ALPHA: 0.2
+    PSEUDO_PL_BETA: 0.9
+    PSEUDO_PL_GAMMA: 1.0
+    PSEUDO_SAVE_DIR: 
+    PSEUDO_SIZE: [1280, 640]
+    SKIP_GEN_PSEUDO: False
+    SOURCE_LOSS_WEIGHT: 1.0
+    TYPE: MsDarkzurichDataset
+  TYPE: MsCityscapesDataset
+  USE_AUG: True
+  VAL:
+    ANNS: ../data/darkzurich_val.json
+    IMAGEDIR: ../../scratch/data/dark_zurich_val
+    ORIGIN_SIZE: [1920, 1080]
+    RESIZE_SIZE: [1920, 1080]
+    TYPE: DarkzurichDataset
+MODEL:
+  BACKBONE:
+    PRETRAINED: True
+    TYPE: R-DL-101-C1-C5-FREEZEBN
+    WITH_IBN: False
+  DECODER:
+    TYPE: DeepLabV2Dedoder
+  DISCRIMINATOR:
+    LAMBDA_ENTROPY_WEIGHT: 0.0
+    LAMBDA_KLDREG_WEIGHT: 0.0
+    LOSS: MSELoss
+    LR: [2e-05]
+    TYPE: ['Origin-Predictor']
+    UPDATE_T: 1.0
+    WEIGHT: [0.05]
+  PREDICTOR:
+    LOSS: CrossEntropy
+    NUM_CLASSES: 19
+    TYPE: UpsamplePredictor
+  TYPE: UDA_Segmentor
+RANDOM_SEED: 888
+TEST:
+  BATCH_SIZE: 1
+  NUM_WORKER: 2
+  N_PROC_PER_NODE: 1
+  RESIZE_SIZE: [[1920, 1080]]
+  USE_FLIP: False
+TRAIN:
+  APEX_OPT: O1
+  BATCHSIZE: 6
+  COSINEANNEALINGLR:
+    T_MAX: 4
+    T_MULT: 1.0
+  EARLY_STOPPING: -1
+  EPOCHES: 50
+  ITER_REPORT: 100
+  ITER_VAL: 600
+  LR: 2e-05
+  N_PROC_PER_NODE: 1
+  OPTIMIZER: Adam
+  PSEUDO_RESUME_FROM: 
+  RESUME_FROM: ../../saved_models/IAST_update/source_only/best_iter.pth
+  SAVE_ALL: False
+  SCHEDULER: CosineAnnealingLR_with_Restart
+WORK_DIR: ../../saved_models/IAST_update/warmup_at
+resume from epoch 9 iter 7200
+Start training!
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 16h 12min, epoch: 10, iter: 7300 , time: 3.345 s/iter, lr: 1.14e-05, D_lr: 1.14e-05, loss: 1.374043, D_Origin-Predictor_loss: 0.281912, mask_loss: 1.374043
+eta: 16h 04min, epoch: 10, iter: 7400 , time: 3.336 s/iter, lr: 1.03e-05, D_lr: 1.03e-05, loss: 0.781871, D_Origin-Predictor_loss: 0.217080, mask_loss: 0.781871
+eta: 16h 01min, epoch: 10, iter: 7500 , time: 3.343 s/iter, lr: 9.27e-06, D_lr: 9.27e-06, loss: 0.725276, D_Origin-Predictor_loss: 0.199366, mask_loss: 0.725276
+eta: 15h 53min, epoch: 10, iter: 7600 , time: 3.337 s/iter, lr: 8.22e-06, D_lr: 8.22e-06, loss: 0.651733, D_Origin-Predictor_loss: 0.197785, mask_loss: 0.651733
+eta: 16h 46min, epoch: 11, iter: 7700 , time: 3.543 s/iter, lr: 7.20e-06, D_lr: 7.20e-06, loss: 0.611579, D_Origin-Predictor_loss: 0.198094, mask_loss: 0.611579
+eta: 15h 55min, epoch: 11, iter: 7800 , time: 3.383 s/iter, lr: 6.20e-06, D_lr: 6.20e-06, loss: 0.618568, D_Origin-Predictor_loss: 0.200346, mask_loss: 0.618568
+epoch: 11, val_miou: 0.1044(0.1679), 0: 0.3397, 1: 0.1570, 2: 0.4236, 3: 0.0373, 4: 0.0805, 5: 0.0641, 6: 0.0437, 7: 0.0340, 8: 0.3272, 9: 0.0880, 10: 0.0041, 11: 0.0883, 12: 0.0000, 13: 0.2888, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0000, 18: 0.0076
+eta: 15h 51min, epoch: 11, iter: 7900 , time: 3.387 s/iter, lr: 5.25e-06, D_lr: 5.25e-06, loss: 0.583439, D_Origin-Predictor_loss: 0.199604, mask_loss: 0.583439
+eta: 15h 44min, epoch: 11, iter: 8000 , time: 3.384 s/iter, lr: 4.35e-06, D_lr: 4.35e-06, loss: 0.568237, D_Origin-Predictor_loss: 0.196408, mask_loss: 0.568237
+eta: 15h 59min, epoch: 11, iter: 8100 , time: 3.459 s/iter, lr: 3.51e-06, D_lr: 3.51e-06, loss: 0.549884, D_Origin-Predictor_loss: 0.200837, mask_loss: 0.549884
+eta: 16h 05min, epoch: 12, iter: 8200 , time: 3.501 s/iter, lr: 2.75e-06, D_lr: 2.75e-06, loss: 0.530767, D_Origin-Predictor_loss: 0.199910, mask_loss: 0.530767
+eta: 15h 28min, epoch: 12, iter: 8300 , time: 3.387 s/iter, lr: 2.06e-06, D_lr: 2.06e-06, loss: 0.532128, D_Origin-Predictor_loss: 0.197082, mask_loss: 0.532128
+eta: 15h 23min, epoch: 12, iter: 8400 , time: 3.389 s/iter, lr: 1.47e-06, D_lr: 1.47e-06, loss: 0.533103, D_Origin-Predictor_loss: 0.197889, mask_loss: 0.533103
+epoch: 12, val_miou: 0.1092(0.1679), 0: 0.3221, 1: 0.1872, 2: 0.4205, 3: 0.0402, 4: 0.0949, 5: 0.0807, 6: 0.0500, 7: 0.0372, 8: 0.3217, 9: 0.0864, 10: 0.0028, 11: 0.0950, 12: 0.0000, 13: 0.3295, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0000, 18: 0.0064
+eta: 15h 35min, epoch: 12, iter: 8500 , time: 3.455 s/iter, lr: 9.70e-07, D_lr: 9.70e-07, loss: 0.529842, D_Origin-Predictor_loss: 0.197281, mask_loss: 0.529842
+eta: 15h 10min, epoch: 12, iter: 8600 , time: 3.383 s/iter, lr: 5.72e-07, D_lr: 5.72e-07, loss: 0.526349, D_Origin-Predictor_loss: 0.200779, mask_loss: 0.526349
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 15h 28min, epoch: 13, iter: 8700 , time: 3.471 s/iter, lr: 2.79e-07, D_lr: 2.79e-07, loss: 0.530816, D_Origin-Predictor_loss: 0.197995, mask_loss: 0.530816
+eta: 15h 00min, epoch: 13, iter: 8800 , time: 3.386 s/iter, lr: 9.50e-08, D_lr: 9.50e-08, loss: 0.530985, D_Origin-Predictor_loss: 0.198622, mask_loss: 0.530985
+eta: 15h 14min, epoch: 13, iter: 8900 , time: 3.461 s/iter, lr: 2.14e-08, D_lr: 2.14e-08, loss: 0.516060, D_Origin-Predictor_loss: 0.203263, mask_loss: 0.516060
+eta: 14h 49min, epoch: 13, iter: 9000 , time: 3.387 s/iter, lr: 2.00e-05, D_lr: 2.00e-05, loss: 0.526245, D_Origin-Predictor_loss: 0.204100, mask_loss: 0.526245
+epoch: 13, val_miou: 0.1102(0.1679), 0: 0.3406, 1: 0.1880, 2: 0.4229, 3: 0.0413, 4: 0.1034, 5: 0.0658, 6: 0.0192, 7: 0.0390, 8: 0.3417, 9: 0.0832, 10: 0.0026, 11: 0.0744, 12: 0.0000, 13: 0.3508, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0000, 18: 0.0212
+eta: 14h 44min, epoch: 13, iter: 9100 , time: 3.391 s/iter, lr: 1.98e-05, D_lr: 1.98e-05, loss: 0.500908, D_Origin-Predictor_loss: 0.203635, mask_loss: 0.500908
+eta: 15h 07min, epoch: 14, iter: 9200 , time: 3.500 s/iter, lr: 1.96e-05, D_lr: 1.96e-05, loss: 0.463802, D_Origin-Predictor_loss: 0.204227, mask_loss: 0.463802
+eta: 14h 50min, epoch: 14, iter: 9300 , time: 3.459 s/iter, lr: 1.92e-05, D_lr: 1.92e-05, loss: 0.467573, D_Origin-Predictor_loss: 0.208421, mask_loss: 0.467573
+eta: 14h 27min, epoch: 14, iter: 9400 , time: 3.390 s/iter, lr: 1.87e-05, D_lr: 1.87e-05, loss: 0.437652, D_Origin-Predictor_loss: 0.210726, mask_loss: 0.437652
+eta: 14h 21min, epoch: 14, iter: 9500 , time: 3.391 s/iter, lr: 1.82e-05, D_lr: 1.82e-05, loss: 0.425764, D_Origin-Predictor_loss: 0.208599, mask_loss: 0.425764
+eta: 14h 15min, epoch: 14, iter: 9600 , time: 3.389 s/iter, lr: 1.75e-05, D_lr: 1.75e-05, loss: 0.401610, D_Origin-Predictor_loss: 0.210151, mask_loss: 0.401610
+epoch: 14, val_miou: 0.1422(0.1679), 0: 0.4279, 1: 0.2704, 2: 0.4770, 3: 0.0647, 4: 0.1812, 5: 0.1287, 6: 0.0678, 7: 0.0628, 8: 0.3571, 9: 0.0608, 10: 0.0110, 11: 0.1191, 12: 0.0000, 13: 0.4348, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0000, 18: 0.0381
+eta: 14h 48min, epoch: 15, iter: 9700 , time: 3.540 s/iter, lr: 1.68e-05, D_lr: 1.68e-05, loss: 0.415578, D_Origin-Predictor_loss: 0.213562, mask_loss: 0.415578
+eta: 14h 04min, epoch: 15, iter: 9800 , time: 3.391 s/iter, lr: 1.59e-05, D_lr: 1.59e-05, loss: 0.413314, D_Origin-Predictor_loss: 0.211632, mask_loss: 0.413314
+eta: 13h 59min, epoch: 15, iter: 9900 , time: 3.392 s/iter, lr: 1.51e-05, D_lr: 1.51e-05, loss: 0.375016, D_Origin-Predictor_loss: 0.212682, mask_loss: 0.375016
+eta: 13h 53min, epoch: 15, iter: 10000 , time: 3.389 s/iter, lr: 1.41e-05, D_lr: 1.41e-05, loss: 0.389708, D_Origin-Predictor_loss: 0.210229, mask_loss: 0.389708
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 14h 05min, epoch: 15, iter: 10100 , time: 3.463 s/iter, lr: 1.31e-05, D_lr: 1.31e-05, loss: 0.388384, D_Origin-Predictor_loss: 0.215635, mask_loss: 0.388384
+eta: 14h 04min, epoch: 16, iter: 10200 , time: 3.482 s/iter, lr: 1.21e-05, D_lr: 1.21e-05, loss: 0.360944, D_Origin-Predictor_loss: 0.214699, mask_loss: 0.360944
+epoch: 16, val_miou: 0.1452(0.1679), 0: 0.4165, 1: 0.3145, 2: 0.4849, 3: 0.0612, 4: 0.1691, 5: 0.1371, 6: 0.0505, 7: 0.0573, 8: 0.3465, 9: 0.1154, 10: 0.0083, 11: 0.1258, 12: 0.0000, 13: 0.4228, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0009, 18: 0.0476
+eta: 13h 36min, epoch: 16, iter: 10300 , time: 3.391 s/iter, lr: 1.11e-05, D_lr: 1.11e-05, loss: 0.366686, D_Origin-Predictor_loss: 0.214595, mask_loss: 0.366686
+eta: 13h 31min, epoch: 16, iter: 10400 , time: 3.392 s/iter, lr: 1.00e-05, D_lr: 1.00e-05, loss: 0.369688, D_Origin-Predictor_loss: 0.214803, mask_loss: 0.369688
+eta: 13h 51min, epoch: 16, iter: 10500 , time: 3.501 s/iter, lr: 8.98e-06, D_lr: 8.98e-06, loss: 0.354593, D_Origin-Predictor_loss: 0.213126, mask_loss: 0.354593
+eta: 13h 19min, epoch: 16, iter: 10600 , time: 3.389 s/iter, lr: 7.93e-06, D_lr: 7.93e-06, loss: 0.355045, D_Origin-Predictor_loss: 0.217238, mask_loss: 0.355045
+eta: 13h 36min, epoch: 17, iter: 10700 , time: 3.485 s/iter, lr: 6.91e-06, D_lr: 6.91e-06, loss: 0.345352, D_Origin-Predictor_loss: 0.215284, mask_loss: 0.345352
+eta: 13h 09min, epoch: 17, iter: 10800 , time: 3.395 s/iter, lr: 5.93e-06, D_lr: 5.93e-06, loss: 0.344040, D_Origin-Predictor_loss: 0.215727, mask_loss: 0.344040
+epoch: 17, val_miou: 0.1448(0.1679), 0: 0.3791, 1: 0.3080, 2: 0.4813, 3: 0.0753, 4: 0.1329, 5: 0.1403, 6: 0.0419, 7: 0.0814, 8: 0.3264, 9: 0.1622, 10: 0.0064, 11: 0.1310, 12: 0.0000, 13: 0.4340, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0044, 18: 0.0464
+eta: 13h 28min, epoch: 17, iter: 10900 , time: 3.501 s/iter, lr: 4.99e-06, D_lr: 4.99e-06, loss: 0.344323, D_Origin-Predictor_loss: 0.215763, mask_loss: 0.344323
+eta: 12h 55min, epoch: 17, iter: 11000 , time: 3.385 s/iter, lr: 4.11e-06, D_lr: 4.11e-06, loss: 0.345507, D_Origin-Predictor_loss: 0.215210, mask_loss: 0.345507
+eta: 12h 52min, epoch: 17, iter: 11100 , time: 3.395 s/iter, lr: 3.29e-06, D_lr: 3.29e-06, loss: 0.334096, D_Origin-Predictor_loss: 0.218072, mask_loss: 0.334096
+eta: 13h 04min, epoch: 18, iter: 11200 , time: 3.473 s/iter, lr: 2.55e-06, D_lr: 2.55e-06, loss: 0.326904, D_Origin-Predictor_loss: 0.218958, mask_loss: 0.326904
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 12h 55min, epoch: 18, iter: 11300 , time: 3.460 s/iter, lr: 1.89e-06, D_lr: 1.89e-06, loss: 0.335755, D_Origin-Predictor_loss: 0.213278, mask_loss: 0.335755
+eta: 12h 34min, epoch: 18, iter: 11400 , time: 3.392 s/iter, lr: 1.32e-06, D_lr: 1.32e-06, loss: 0.343752, D_Origin-Predictor_loss: 0.214858, mask_loss: 0.343752
+epoch: 18, val_miou: 0.1457(0.1679), 0: 0.3968, 1: 0.3241, 2: 0.4823, 3: 0.0763, 4: 0.1504, 5: 0.1366, 6: 0.0325, 7: 0.0799, 8: 0.3263, 9: 0.1696, 10: 0.0058, 11: 0.1255, 12: 0.0000, 13: 0.4118, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0044, 18: 0.0463
+eta: 12h 28min, epoch: 18, iter: 11500 , time: 3.391 s/iter, lr: 8.49e-07, D_lr: 8.49e-07, loss: 0.330002, D_Origin-Predictor_loss: 0.214980, mask_loss: 0.330002
+eta: 12h 24min, epoch: 18, iter: 11600 , time: 3.396 s/iter, lr: 4.79e-07, D_lr: 4.79e-07, loss: 0.334912, D_Origin-Predictor_loss: 0.216070, mask_loss: 0.334912
+eta: 12h 56min, epoch: 19, iter: 11700 , time: 3.570 s/iter, lr: 2.17e-07, D_lr: 2.17e-07, loss: 0.323934, D_Origin-Predictor_loss: 0.217949, mask_loss: 0.323934
+eta: 12h 12min, epoch: 19, iter: 11800 , time: 3.393 s/iter, lr: 6.32e-08, D_lr: 6.32e-08, loss: 0.331585, D_Origin-Predictor_loss: 0.215368, mask_loss: 0.331585
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 16384.0
+eta: 12h 05min, epoch: 19, iter: 11900 , time: 3.389 s/iter, lr: 2.00e-05, D_lr: 2.00e-05, loss: 0.341223, D_Origin-Predictor_loss: 0.215609, mask_loss: 0.341223
+eta: 12h 01min, epoch: 19, iter: 12000 , time: 3.394 s/iter, lr: 1.99e-05, D_lr: 1.99e-05, loss: 0.337708, D_Origin-Predictor_loss: 0.219793, mask_loss: 0.337708
+epoch: 19, val_miou: 0.1516(0.1679), 0: 0.4090, 1: 0.3185, 2: 0.4853, 3: 0.0690, 4: 0.2462, 5: 0.1365, 6: 0.0392, 7: 0.0701, 8: 0.3244, 9: 0.1421, 10: 0.0080, 11: 0.1159, 12: 0.0000, 13: 0.4546, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0148, 18: 0.0472
+eta: 12h 13min, epoch: 19, iter: 12100 , time: 3.481 s/iter, lr: 1.98e-05, D_lr: 1.98e-05, loss: 0.331202, D_Origin-Predictor_loss: 0.219412, mask_loss: 0.331202
+eta: 12h 05min, epoch: 20, iter: 12200 , time: 3.467 s/iter, lr: 1.95e-05, D_lr: 1.95e-05, loss: 0.313766, D_Origin-Predictor_loss: 0.223700, mask_loss: 0.313766
+eta: 11h 43min, epoch: 20, iter: 12300 , time: 3.393 s/iter, lr: 1.91e-05, D_lr: 1.91e-05, loss: 0.325767, D_Origin-Predictor_loss: 0.219499, mask_loss: 0.325767
+eta: 11h 39min, epoch: 20, iter: 12400 , time: 3.396 s/iter, lr: 1.86e-05, D_lr: 1.86e-05, loss: 0.336722, D_Origin-Predictor_loss: 0.223612, mask_loss: 0.336722
+eta: 11h 50min, epoch: 20, iter: 12500 , time: 3.481 s/iter, lr: 1.80e-05, D_lr: 1.80e-05, loss: 0.308852, D_Origin-Predictor_loss: 0.221553, mask_loss: 0.308852
+eta: 11h 27min, epoch: 20, iter: 12600 , time: 3.394 s/iter, lr: 1.73e-05, D_lr: 1.73e-05, loss: 0.304196, D_Origin-Predictor_loss: 0.226404, mask_loss: 0.304196
+epoch: 20, val_miou: 0.1583(0.1679), 0: 0.4691, 1: 0.3427, 2: 0.5081, 3: 0.0907, 4: 0.1434, 5: 0.1434, 6: 0.0056, 7: 0.0851, 8: 0.3479, 9: 0.1902, 10: 0.0094, 11: 0.1446, 12: 0.0000, 13: 0.4557, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0201, 18: 0.0521
+eta: 11h 38min, epoch: 21, iter: 12700 , time: 3.479 s/iter, lr: 1.65e-05, D_lr: 1.65e-05, loss: 0.294724, D_Origin-Predictor_loss: 0.226385, mask_loss: 0.294724
+eta: 11h 16min, epoch: 21, iter: 12800 , time: 3.396 s/iter, lr: 1.57e-05, D_lr: 1.57e-05, loss: 0.289677, D_Origin-Predictor_loss: 0.222902, mask_loss: 0.289677
+eta: 11h 26min, epoch: 21, iter: 12900 , time: 3.476 s/iter, lr: 1.48e-05, D_lr: 1.48e-05, loss: 0.314387, D_Origin-Predictor_loss: 0.227918, mask_loss: 0.314387
+eta: 11h 03min, epoch: 21, iter: 13000 , time: 3.391 s/iter, lr: 1.39e-05, D_lr: 1.39e-05, loss: 0.297051, D_Origin-Predictor_loss: 0.225595, mask_loss: 0.297051
+eta: 10h 58min, epoch: 21, iter: 13100 , time: 3.393 s/iter, lr: 1.29e-05, D_lr: 1.29e-05, loss: 0.296204, D_Origin-Predictor_loss: 0.227177, mask_loss: 0.296204
+eta: 11h 12min, epoch: 22, iter: 13200 , time: 3.491 s/iter, lr: 1.18e-05, D_lr: 1.18e-05, loss: 0.285010, D_Origin-Predictor_loss: 0.227777, mask_loss: 0.285010
+epoch: 22, val_miou: 0.1526(0.1679), 0: 0.4409, 1: 0.3690, 2: 0.4722, 3: 0.0642, 4: 0.1781, 5: 0.1443, 6: 0.0276, 7: 0.0886, 8: 0.3218, 9: 0.1540, 10: 0.0102, 11: 0.1000, 12: 0.0000, 13: 0.4292, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0380, 18: 0.0622
+eta: 11h 00min, epoch: 22, iter: 13300 , time: 3.461 s/iter, lr: 1.08e-05, D_lr: 1.08e-05, loss: 0.283626, D_Origin-Predictor_loss: 0.228099, mask_loss: 0.283626
+eta: 10h 42min, epoch: 22, iter: 13400 , time: 3.395 s/iter, lr: 9.74e-06, D_lr: 9.74e-06, loss: 0.291464, D_Origin-Predictor_loss: 0.225535, mask_loss: 0.291464
+eta: 10h 35min, epoch: 22, iter: 13500 , time: 3.391 s/iter, lr: 8.68e-06, D_lr: 8.68e-06, loss: 0.281546, D_Origin-Predictor_loss: 0.224766, mask_loss: 0.281546
+eta: 10h 30min, epoch: 22, iter: 13600 , time: 3.391 s/iter, lr: 7.65e-06, D_lr: 7.65e-06, loss: 0.272052, D_Origin-Predictor_loss: 0.226191, mask_loss: 0.272052
+eta: 10h 54min, epoch: 23, iter: 13700 , time: 3.555 s/iter, lr: 6.64e-06, D_lr: 6.64e-06, loss: 0.276487, D_Origin-Predictor_loss: 0.226363, mask_loss: 0.276487
+eta: 10h 20min, epoch: 23, iter: 13800 , time: 3.399 s/iter, lr: 5.66e-06, D_lr: 5.66e-06, loss: 0.275565, D_Origin-Predictor_loss: 0.224352, mask_loss: 0.275565
+epoch: 23, val_miou: 0.1562(0.1679), 0: 0.4854, 1: 0.3335, 2: 0.5083, 3: 0.0948, 4: 0.1230, 5: 0.1503, 6: 0.0174, 7: 0.0900, 8: 0.3309, 9: 0.2008, 10: 0.0131, 11: 0.1098, 12: 0.0000, 13: 0.4400, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0266, 18: 0.0443
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 16384.0
+eta: 10h 13min, epoch: 23, iter: 13900 , time: 3.393 s/iter, lr: 4.74e-06, D_lr: 4.74e-06, loss: 0.290677, D_Origin-Predictor_loss: 0.225788, mask_loss: 0.290677
+eta: 10h 08min, epoch: 23, iter: 14000 , time: 3.399 s/iter, lr: 3.87e-06, D_lr: 3.87e-06, loss: 0.281647, D_Origin-Predictor_loss: 0.225384, mask_loss: 0.281647
+eta: 10h 20min, epoch: 23, iter: 14100 , time: 3.497 s/iter, lr: 3.07e-06, D_lr: 3.07e-06, loss: 0.271347, D_Origin-Predictor_loss: 0.227558, mask_loss: 0.271347
+eta: 10h 09min, epoch: 24, iter: 14200 , time: 3.465 s/iter, lr: 2.35e-06, D_lr: 2.35e-06, loss: 0.272882, D_Origin-Predictor_loss: 0.226832, mask_loss: 0.272882
+eta: 9h 50min, epoch: 24, iter: 14300 , time: 3.390 s/iter, lr: 1.72e-06, D_lr: 1.72e-06, loss: 0.278181, D_Origin-Predictor_loss: 0.225120, mask_loss: 0.278181
+eta: 9h 45min, epoch: 24, iter: 14400 , time: 3.394 s/iter, lr: 1.18e-06, D_lr: 1.18e-06, loss: 0.291643, D_Origin-Predictor_loss: 0.225395, mask_loss: 0.291643
+epoch: 24, val_miou: 0.1473(0.1679), 0: 0.4158, 1: 0.3343, 2: 0.5026, 3: 0.0861, 4: 0.1470, 5: 0.1352, 6: 0.0167, 7: 0.0876, 8: 0.3132, 9: 0.1587, 10: 0.0100, 11: 0.0805, 12: 0.0000, 13: 0.4370, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0188, 18: 0.0553
+eta: 9h 51min, epoch: 24, iter: 14500 , time: 3.465 s/iter, lr: 7.35e-07, D_lr: 7.35e-07, loss: 0.266530, D_Origin-Predictor_loss: 0.222681, mask_loss: 0.266530
+eta: 9h 33min, epoch: 24, iter: 14600 , time: 3.391 s/iter, lr: 3.95e-07, D_lr: 3.95e-07, loss: 0.274870, D_Origin-Predictor_loss: 0.225668, mask_loss: 0.274870
+eta: 9h 41min, epoch: 25, iter: 14700 , time: 3.469 s/iter, lr: 1.63e-07, D_lr: 1.63e-07, loss: 0.270787, D_Origin-Predictor_loss: 0.224692, mask_loss: 0.270787
+eta: 9h 22min, epoch: 25, iter: 14800 , time: 3.391 s/iter, lr: 4.01e-08, D_lr: 4.01e-08, loss: 0.265659, D_Origin-Predictor_loss: 0.222576, mask_loss: 0.265659
+eta: 9h 30min, epoch: 25, iter: 14900 , time: 3.474 s/iter, lr: 2.00e-05, D_lr: 2.00e-05, loss: 0.277503, D_Origin-Predictor_loss: 0.225541, mask_loss: 0.277503
+eta: 9h 11min, epoch: 25, iter: 15000 , time: 3.394 s/iter, lr: 1.99e-05, D_lr: 1.99e-05, loss: 0.279131, D_Origin-Predictor_loss: 0.229431, mask_loss: 0.279131
+epoch: 25, val_miou: 0.1670(0.1679), 0: 0.5265, 1: 0.3755, 2: 0.5394, 3: 0.1021, 4: 0.1519, 5: 0.1709, 6: 0.0197, 7: 0.0872, 8: 0.3384, 9: 0.1800, 10: 0.0169, 11: 0.1251, 12: 0.0025, 13: 0.4417, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0580, 18: 0.0378
+eta: 9h 06min, epoch: 25, iter: 15100 , time: 3.395 s/iter, lr: 1.97e-05, D_lr: 1.97e-05, loss: 0.280093, D_Origin-Predictor_loss: 0.230094, mask_loss: 0.280093
+eta: 9h 16min, epoch: 26, iter: 15200 , time: 3.498 s/iter, lr: 1.94e-05, D_lr: 1.94e-05, loss: 0.274395, D_Origin-Predictor_loss: 0.228141, mask_loss: 0.274395
+eta: 9h 05min, epoch: 26, iter: 15300 , time: 3.463 s/iter, lr: 1.89e-05, D_lr: 1.89e-05, loss: 0.275706, D_Origin-Predictor_loss: 0.228363, mask_loss: 0.275706
+eta: 8h 48min, epoch: 26, iter: 15400 , time: 3.394 s/iter, lr: 1.84e-05, D_lr: 1.84e-05, loss: 0.275264, D_Origin-Predictor_loss: 0.227400, mask_loss: 0.275264
+eta: 8h 42min, epoch: 26, iter: 15500 , time: 3.390 s/iter, lr: 1.78e-05, D_lr: 1.78e-05, loss: 0.263753, D_Origin-Predictor_loss: 0.227817, mask_loss: 0.263753
+eta: 8h 37min, epoch: 26, iter: 15600 , time: 3.394 s/iter, lr: 1.71e-05, D_lr: 1.71e-05, loss: 0.259216, D_Origin-Predictor_loss: 0.227411, mask_loss: 0.259216
+epoch: 26, val_miou: 0.1456(0.1679), 0: 0.4328, 1: 0.3210, 2: 0.5139, 3: 0.0921, 4: 0.1516, 5: 0.1397, 6: 0.0110, 7: 0.0851, 8: 0.3105, 9: 0.1358, 10: 0.0121, 11: 0.1355, 12: 0.0000, 13: 0.3738, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0014, 18: 0.0494
+eta: 8h 53min, epoch: 27, iter: 15700 , time: 3.536 s/iter, lr: 1.63e-05, D_lr: 1.63e-05, loss: 0.268922, D_Origin-Predictor_loss: 0.228388, mask_loss: 0.268922
+eta: 8h 26min, epoch: 27, iter: 15800 , time: 3.393 s/iter, lr: 1.55e-05, D_lr: 1.55e-05, loss: 0.268141, D_Origin-Predictor_loss: 0.226524, mask_loss: 0.268141
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 8h 21min, epoch: 27, iter: 15900 , time: 3.398 s/iter, lr: 1.45e-05, D_lr: 1.45e-05, loss: 0.259993, D_Origin-Predictor_loss: 0.226886, mask_loss: 0.259993
+eta: 8h 14min, epoch: 27, iter: 16000 , time: 3.391 s/iter, lr: 1.36e-05, D_lr: 1.36e-05, loss: 0.249896, D_Origin-Predictor_loss: 0.224294, mask_loss: 0.249896
+eta: 8h 23min, epoch: 27, iter: 16100 , time: 3.493 s/iter, lr: 1.26e-05, D_lr: 1.26e-05, loss: 0.258268, D_Origin-Predictor_loss: 0.226192, mask_loss: 0.258268
+eta: 8h 14min, epoch: 28, iter: 16200 , time: 3.469 s/iter, lr: 1.15e-05, D_lr: 1.15e-05, loss: 0.259753, D_Origin-Predictor_loss: 0.224750, mask_loss: 0.259753
+epoch: 28, val_miou: 0.1451(0.1679), 0: 0.4393, 1: 0.3673, 2: 0.4722, 3: 0.0886, 4: 0.0894, 5: 0.1461, 6: 0.0109, 7: 0.0833, 8: 0.3200, 9: 0.1078, 10: 0.0143, 11: 0.1407, 12: 0.0000, 13: 0.4113, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0180, 18: 0.0476
+eta: 7h 59min, epoch: 28, iter: 16300 , time: 3.402 s/iter, lr: 1.05e-05, D_lr: 1.05e-05, loss: 0.255510, D_Origin-Predictor_loss: 0.227333, mask_loss: 0.255510
+eta: 7h 52min, epoch: 28, iter: 16400 , time: 3.393 s/iter, lr: 9.44e-06, D_lr: 9.44e-06, loss: 0.261449, D_Origin-Predictor_loss: 0.224624, mask_loss: 0.261449
+eta: 7h 59min, epoch: 28, iter: 16500 , time: 3.485 s/iter, lr: 8.39e-06, D_lr: 8.39e-06, loss: 0.257915, D_Origin-Predictor_loss: 0.225094, mask_loss: 0.257915
+eta: 7h 41min, epoch: 28, iter: 16600 , time: 3.398 s/iter, lr: 7.36e-06, D_lr: 7.36e-06, loss: 0.246304, D_Origin-Predictor_loss: 0.225471, mask_loss: 0.246304
+eta: 7h 46min, epoch: 29, iter: 16700 , time: 3.478 s/iter, lr: 6.36e-06, D_lr: 6.36e-06, loss: 0.260312, D_Origin-Predictor_loss: 0.225470, mask_loss: 0.260312
+eta: 7h 31min, epoch: 29, iter: 16800 , time: 3.408 s/iter, lr: 5.40e-06, D_lr: 5.40e-06, loss: 0.242236, D_Origin-Predictor_loss: 0.223856, mask_loss: 0.242236
+epoch: 29, val_miou: 0.1542(0.1679), 0: 0.4974, 1: 0.3554, 2: 0.5063, 3: 0.0942, 4: 0.1243, 5: 0.1614, 6: 0.0108, 7: 0.0866, 8: 0.3288, 9: 0.1186, 10: 0.0216, 11: 0.1452, 12: 0.0006, 13: 0.4158, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0267, 18: 0.0360
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 7h 33min, epoch: 29, iter: 16900 , time: 3.469 s/iter, lr: 4.49e-06, D_lr: 4.49e-06, loss: 0.247079, D_Origin-Predictor_loss: 0.222521, mask_loss: 0.247079
+eta: 7h 18min, epoch: 29, iter: 17000 , time: 3.393 s/iter, lr: 3.64e-06, D_lr: 3.64e-06, loss: 0.248145, D_Origin-Predictor_loss: 0.221348, mask_loss: 0.248145
+eta: 7h 11min, epoch: 29, iter: 17100 , time: 3.388 s/iter, lr: 2.86e-06, D_lr: 2.86e-06, loss: 0.248653, D_Origin-Predictor_loss: 0.226227, mask_loss: 0.248653
+eta: 7h 17min, epoch: 30, iter: 17200 , time: 3.477 s/iter, lr: 2.17e-06, D_lr: 2.17e-06, loss: 0.241150, D_Origin-Predictor_loss: 0.223129, mask_loss: 0.241150
+eta: 7h 09min, epoch: 30, iter: 17300 , time: 3.463 s/iter, lr: 1.56e-06, D_lr: 1.56e-06, loss: 0.250239, D_Origin-Predictor_loss: 0.223360, mask_loss: 0.250239
+eta: 6h 55min, epoch: 30, iter: 17400 , time: 3.395 s/iter, lr: 1.04e-06, D_lr: 1.04e-06, loss: 0.248625, D_Origin-Predictor_loss: 0.221983, mask_loss: 0.248625
+epoch: 30, val_miou: 0.1537(0.1679), 0: 0.4940, 1: 0.3601, 2: 0.4872, 3: 0.0880, 4: 0.1248, 5: 0.1538, 6: 0.0152, 7: 0.0865, 8: 0.3254, 9: 0.1135, 10: 0.0201, 11: 0.1409, 12: 0.0006, 13: 0.4465, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0305, 18: 0.0337
+eta: 6h 50min, epoch: 30, iter: 17500 , time: 3.397 s/iter, lr: 6.29e-07, D_lr: 6.29e-07, loss: 0.244877, D_Origin-Predictor_loss: 0.220812, mask_loss: 0.244877
+eta: 6h 57min, epoch: 31, iter: 17600 , time: 3.507 s/iter, lr: 3.19e-07, D_lr: 3.19e-07, loss: 0.241671, D_Origin-Predictor_loss: 0.221696, mask_loss: 0.241671
+eta: 6h 47min, epoch: 31, iter: 17700 , time: 3.466 s/iter, lr: 1.17e-07, D_lr: 1.17e-07, loss: 0.249483, D_Origin-Predictor_loss: 0.222402, mask_loss: 0.249483
+eta: 6h 33min, epoch: 31, iter: 17800 , time: 3.393 s/iter, lr: 2.57e-08, D_lr: 2.57e-08, loss: 0.245444, D_Origin-Predictor_loss: 0.222946, mask_loss: 0.245444
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 32768.0
+eta: 6h 27min, epoch: 31, iter: 17900 , time: 3.394 s/iter, lr: 2.00e-05, D_lr: 2.00e-05, loss: 0.258120, D_Origin-Predictor_loss: 0.225515, mask_loss: 0.258120
+eta: 6h 21min, epoch: 31, iter: 18000 , time: 3.392 s/iter, lr: 1.98e-05, D_lr: 1.98e-05, loss: 0.255388, D_Origin-Predictor_loss: 0.226762, mask_loss: 0.255388
+epoch: 31, val_miou: 0.1475(0.1679), 0: 0.4669, 1: 0.3341, 2: 0.4742, 3: 0.0889, 4: 0.1420, 5: 0.1497, 6: 0.0029, 7: 0.0887, 8: 0.3196, 9: 0.0865, 10: 0.0179, 11: 0.1435, 12: 0.0010, 13: 0.4315, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0275, 18: 0.0282
+eta: 6h 31min, epoch: 32, iter: 18100 , time: 3.532 s/iter, lr: 1.96e-05, D_lr: 1.96e-05, loss: 0.249553, D_Origin-Predictor_loss: 0.226210, mask_loss: 0.249553
+eta: 6h 10min, epoch: 32, iter: 18200 , time: 3.393 s/iter, lr: 1.93e-05, D_lr: 1.93e-05, loss: 0.255990, D_Origin-Predictor_loss: 0.225108, mask_loss: 0.255990
+eta: 6h 04min, epoch: 32, iter: 18300 , time: 3.393 s/iter, lr: 1.88e-05, D_lr: 1.88e-05, loss: 0.245717, D_Origin-Predictor_loss: 0.225809, mask_loss: 0.245717
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 16384.0
+eta: 5h 59min, epoch: 32, iter: 18400 , time: 3.396 s/iter, lr: 1.83e-05, D_lr: 1.83e-05, loss: 0.252288, D_Origin-Predictor_loss: 0.230873, mask_loss: 0.252288
+eta: 6h 01min, epoch: 32, iter: 18500 , time: 3.474 s/iter, lr: 1.76e-05, D_lr: 1.76e-05, loss: 0.242364, D_Origin-Predictor_loss: 0.227482, mask_loss: 0.242364
+eta: 5h 57min, epoch: 33, iter: 18600 , time: 3.484 s/iter, lr: 1.69e-05, D_lr: 1.69e-05, loss: 0.236872, D_Origin-Predictor_loss: 0.229480, mask_loss: 0.236872
+epoch: 33, val_miou: 0.1580(0.1679), 0: 0.5017, 1: 0.3091, 2: 0.5240, 3: 0.0969, 4: 0.2041, 5: 0.1675, 6: 0.0031, 7: 0.0878, 8: 0.3262, 9: 0.1037, 10: 0.0320, 11: 0.1456, 12: 0.0003, 13: 0.4436, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0348, 18: 0.0225
+eta: 5h 42min, epoch: 33, iter: 18700 , time: 3.394 s/iter, lr: 1.61e-05, D_lr: 1.61e-05, loss: 0.242360, D_Origin-Predictor_loss: 0.229022, mask_loss: 0.242360
+eta: 5h 36min, epoch: 33, iter: 18800 , time: 3.395 s/iter, lr: 1.52e-05, D_lr: 1.52e-05, loss: 0.242305, D_Origin-Predictor_loss: 0.225697, mask_loss: 0.242305
+eta: 5h 37min, epoch: 33, iter: 18900 , time: 3.466 s/iter, lr: 1.43e-05, D_lr: 1.43e-05, loss: 0.235927, D_Origin-Predictor_loss: 0.225249, mask_loss: 0.235927
+eta: 5h 25min, epoch: 33, iter: 19000 , time: 3.393 s/iter, lr: 1.33e-05, D_lr: 1.33e-05, loss: 0.233794, D_Origin-Predictor_loss: 0.227560, mask_loss: 0.233794
+eta: 5h 26min, epoch: 34, iter: 19100 , time: 3.471 s/iter, lr: 1.23e-05, D_lr: 1.23e-05, loss: 0.238536, D_Origin-Predictor_loss: 0.229016, mask_loss: 0.238536
+eta: 5h 13min, epoch: 34, iter: 19200 , time: 3.392 s/iter, lr: 1.13e-05, D_lr: 1.13e-05, loss: 0.237437, D_Origin-Predictor_loss: 0.224137, mask_loss: 0.237437
+epoch: 34, val_miou: 0.1505(0.1679), 0: 0.5185, 1: 0.3137, 2: 0.5165, 3: 0.0880, 4: 0.1021, 5: 0.1766, 6: 0.0062, 7: 0.0830, 8: 0.3291, 9: 0.0730, 10: 0.0344, 11: 0.1394, 12: 0.0003, 13: 0.4359, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0251, 18: 0.0171
+eta: 5h 15min, epoch: 34, iter: 19300 , time: 3.475 s/iter, lr: 1.02e-05, D_lr: 1.02e-05, loss: 0.243052, D_Origin-Predictor_loss: 0.228897, mask_loss: 0.243052
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 16384.0
+eta: 5h 02min, epoch: 34, iter: 19400 , time: 3.388 s/iter, lr: 9.15e-06, D_lr: 9.15e-06, loss: 0.235918, D_Origin-Predictor_loss: 0.225563, mask_loss: 0.235918
+eta: 4h 57min, epoch: 34, iter: 19500 , time: 3.396 s/iter, lr: 8.10e-06, D_lr: 8.10e-06, loss: 0.230479, D_Origin-Predictor_loss: 0.225950, mask_loss: 0.230479
+eta: 4h 58min, epoch: 35, iter: 19600 , time: 3.483 s/iter, lr: 7.08e-06, D_lr: 7.08e-06, loss: 0.229949, D_Origin-Predictor_loss: 0.227007, mask_loss: 0.229949
+eta: 4h 53min, epoch: 35, iter: 19700 , time: 3.490 s/iter, lr: 6.08e-06, D_lr: 6.08e-06, loss: 0.236207, D_Origin-Predictor_loss: 0.223973, mask_loss: 0.236207
+eta: 4h 39min, epoch: 35, iter: 19800 , time: 3.386 s/iter, lr: 5.14e-06, D_lr: 5.14e-06, loss: 0.235629, D_Origin-Predictor_loss: 0.225288, mask_loss: 0.235629
+epoch: 35, val_miou: 0.1521(0.1679), 0: 0.5214, 1: 0.3038, 2: 0.5167, 3: 0.0894, 4: 0.1412, 5: 0.1639, 6: 0.0071, 7: 0.0859, 8: 0.3127, 9: 0.0724, 10: 0.0354, 11: 0.1443, 12: 0.0034, 13: 0.4383, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0356, 18: 0.0174
+eta: 4h 34min, epoch: 35, iter: 19900 , time: 3.391 s/iter, lr: 4.24e-06, D_lr: 4.24e-06, loss: 0.233999, D_Origin-Predictor_loss: 0.226055, mask_loss: 0.233999
+eta: 4h 27min, epoch: 35, iter: 20000 , time: 3.385 s/iter, lr: 3.42e-06, D_lr: 3.42e-06, loss: 0.226486, D_Origin-Predictor_loss: 0.225422, mask_loss: 0.226486
+eta: 4h 33min, epoch: 36, iter: 20100 , time: 3.527 s/iter, lr: 2.66e-06, D_lr: 2.66e-06, loss: 0.221649, D_Origin-Predictor_loss: 0.224473, mask_loss: 0.221649
+eta: 4h 16min, epoch: 36, iter: 20200 , time: 3.384 s/iter, lr: 1.99e-06, D_lr: 1.99e-06, loss: 0.234017, D_Origin-Predictor_loss: 0.223568, mask_loss: 0.234017
+eta: 4h 11min, epoch: 36, iter: 20300 , time: 3.388 s/iter, lr: 1.40e-06, D_lr: 1.40e-06, loss: 0.229693, D_Origin-Predictor_loss: 0.223668, mask_loss: 0.229693
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 16384.0
+eta: 4h 05min, epoch: 36, iter: 20400 , time: 3.380 s/iter, lr: 9.17e-07, D_lr: 9.17e-07, loss: 0.238600, D_Origin-Predictor_loss: 0.224244, mask_loss: 0.238600
+epoch: 36, val_miou: 0.1561(0.1679), 0: 0.5339, 1: 0.2996, 2: 0.5247, 3: 0.0950, 4: 0.1150, 5: 0.1930, 6: 0.0051, 7: 0.0889, 8: 0.3288, 9: 0.0773, 10: 0.0363, 11: 0.1530, 12: 0.0258, 13: 0.4367, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0377, 18: 0.0157
+eta: 4h 03min, epoch: 36, iter: 20500 , time: 3.443 s/iter, lr: 5.31e-07, D_lr: 5.31e-07, loss: 0.218675, D_Origin-Predictor_loss: 0.221749, mask_loss: 0.218675
+eta: 3h 58min, epoch: 37, iter: 20600 , time: 3.452 s/iter, lr: 2.51e-07, D_lr: 2.51e-07, loss: 0.225658, D_Origin-Predictor_loss: 0.225244, mask_loss: 0.225658
+eta: 3h 47min, epoch: 37, iter: 20700 , time: 3.376 s/iter, lr: 8.03e-08, D_lr: 8.03e-08, loss: 0.234807, D_Origin-Predictor_loss: 0.224776, mask_loss: 0.234807
+eta: 3h 42min, epoch: 37, iter: 20800 , time: 3.374 s/iter, lr: 2.01e-08, D_lr: 2.01e-08, loss: 0.240853, D_Origin-Predictor_loss: 0.222141, mask_loss: 0.240853
+eta: 3h 41min, epoch: 37, iter: 20900 , time: 3.451 s/iter, lr: 1.99e-05, D_lr: 1.99e-05, loss: 0.221588, D_Origin-Predictor_loss: 0.226456, mask_loss: 0.221588
+eta: 3h 30min, epoch: 37, iter: 21000 , time: 3.370 s/iter, lr: 1.98e-05, D_lr: 1.98e-05, loss: 0.230604, D_Origin-Predictor_loss: 0.228087, mask_loss: 0.230604
+epoch: 37, val_miou: 0.1501(0.1679), 0: 0.5248, 1: 0.3021, 2: 0.5280, 3: 0.0868, 4: 0.1083, 5: 0.1630, 6: 0.0030, 7: 0.0903, 8: 0.3127, 9: 0.0758, 10: 0.0501, 11: 0.1290, 12: 0.0000, 13: 0.4189, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0430, 18: 0.0159
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 8192.0
+eta: 3h 30min, epoch: 38, iter: 21100 , time: 3.456 s/iter, lr: 1.95e-05, D_lr: 1.95e-05, loss: 0.233645, D_Origin-Predictor_loss: 0.228612, mask_loss: 0.233645
+eta: 3h 20min, epoch: 38, iter: 21200 , time: 3.383 s/iter, lr: 1.91e-05, D_lr: 1.91e-05, loss: 0.240619, D_Origin-Predictor_loss: 0.228211, mask_loss: 0.240619
+eta: 3h 19min, epoch: 38, iter: 21300 , time: 3.471 s/iter, lr: 1.87e-05, D_lr: 1.87e-05, loss: 0.230197, D_Origin-Predictor_loss: 0.228155, mask_loss: 0.230197
+eta: 3h 09min, epoch: 38, iter: 21400 , time: 3.391 s/iter, lr: 1.81e-05, D_lr: 1.81e-05, loss: 0.225867, D_Origin-Predictor_loss: 0.228772, mask_loss: 0.225867
+eta: 3h 03min, epoch: 38, iter: 21500 , time: 3.393 s/iter, lr: 1.74e-05, D_lr: 1.74e-05, loss: 0.226216, D_Origin-Predictor_loss: 0.228730, mask_loss: 0.226216
+eta: 3h 02min, epoch: 39, iter: 21600 , time: 3.484 s/iter, lr: 1.67e-05, D_lr: 1.67e-05, loss: 0.226711, D_Origin-Predictor_loss: 0.225374, mask_loss: 0.226711
+epoch: 39, val_miou: 0.1505(0.1679), 0: 0.5158, 1: 0.2905, 2: 0.5502, 3: 0.0743, 4: 0.0892, 5: 0.1630, 6: 0.0117, 7: 0.0815, 8: 0.3109, 9: 0.0767, 10: 0.0545, 11: 0.1514, 12: 0.0306, 13: 0.4303, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0097, 18: 0.0187
+eta: 3h 02min, epoch: 39, iter: 21700 , time: 3.586 s/iter, lr: 1.58e-05, D_lr: 1.58e-05, loss: 0.227420, D_Origin-Predictor_loss: 0.224998, mask_loss: 0.227420
+eta: 2h 47min, epoch: 39, iter: 21800 , time: 3.405 s/iter, lr: 1.50e-05, D_lr: 1.50e-05, loss: 0.238986, D_Origin-Predictor_loss: 0.227019, mask_loss: 0.238986
+eta: 2h 41min, epoch: 39, iter: 21900 , time: 3.404 s/iter, lr: 1.40e-05, D_lr: 1.40e-05, loss: 0.220931, D_Origin-Predictor_loss: 0.226941, mask_loss: 0.220931
+eta: 2h 35min, epoch: 39, iter: 22000 , time: 3.393 s/iter, lr: 1.30e-05, D_lr: 1.30e-05, loss: 0.234494, D_Origin-Predictor_loss: 0.226637, mask_loss: 0.234494
+eta: 2h 41min, epoch: 40, iter: 22100 , time: 3.646 s/iter, lr: 1.20e-05, D_lr: 1.20e-05, loss: 0.211931, D_Origin-Predictor_loss: 0.224673, mask_loss: 0.211931
+eta: 2h 24min, epoch: 40, iter: 22200 , time: 3.390 s/iter, lr: 1.10e-05, D_lr: 1.10e-05, loss: 0.214557, D_Origin-Predictor_loss: 0.223760, mask_loss: 0.214557
+epoch: 40, val_miou: 0.1461(0.1679), 0: 0.4953, 1: 0.2889, 2: 0.5476, 3: 0.0716, 4: 0.0789, 5: 0.1519, 6: 0.0057, 7: 0.0873, 8: 0.2807, 9: 0.0612, 10: 0.0512, 11: 0.1530, 12: 0.0202, 13: 0.4279, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0253, 18: 0.0285
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 8192.0
+eta: 2h 18min, epoch: 40, iter: 22300 , time: 3.390 s/iter, lr: 9.90e-06, D_lr: 9.90e-06, loss: 0.235948, D_Origin-Predictor_loss: 0.227360, mask_loss: 0.235948
+eta: 2h 12min, epoch: 40, iter: 22400 , time: 3.389 s/iter, lr: 8.85e-06, D_lr: 8.85e-06, loss: 0.220841, D_Origin-Predictor_loss: 0.222690, mask_loss: 0.220841
+eta: 2h 09min, epoch: 40, iter: 22500 , time: 3.466 s/iter, lr: 7.81e-06, D_lr: 7.81e-06, loss: 0.218790, D_Origin-Predictor_loss: 0.223105, mask_loss: 0.218790
+eta: 2h 04min, epoch: 41, iter: 22600 , time: 3.467 s/iter, lr: 6.79e-06, D_lr: 6.79e-06, loss: 0.213180, D_Origin-Predictor_loss: 0.221354, mask_loss: 0.213180
+eta: 1h 55min, epoch: 41, iter: 22700 , time: 3.393 s/iter, lr: 5.81e-06, D_lr: 5.81e-06, loss: 0.226647, D_Origin-Predictor_loss: 0.224667, mask_loss: 0.226647
+eta: 1h 50min, epoch: 41, iter: 22800 , time: 3.392 s/iter, lr: 4.88e-06, D_lr: 4.88e-06, loss: 0.229138, D_Origin-Predictor_loss: 0.223722, mask_loss: 0.229138
+epoch: 41, val_miou: 0.1646(0.1679), 0: 0.5546, 1: 0.3194, 2: 0.5594, 3: 0.0893, 4: 0.1097, 5: 0.1902, 6: 0.0097, 7: 0.0963, 8: 0.3244, 9: 0.1287, 10: 0.0612, 11: 0.1508, 12: 0.0327, 13: 0.4326, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0346, 18: 0.0329
+eta: 1h 46min, epoch: 41, iter: 22900 , time: 3.462 s/iter, lr: 4.01e-06, D_lr: 4.01e-06, loss: 0.216414, D_Origin-Predictor_loss: 0.219998, mask_loss: 0.216414
+eta: 1h 38min, epoch: 41, iter: 23000 , time: 3.391 s/iter, lr: 3.20e-06, D_lr: 3.20e-06, loss: 0.210219, D_Origin-Predictor_loss: 0.220759, mask_loss: 0.210219
+eta: 1h 35min, epoch: 42, iter: 23100 , time: 3.472 s/iter, lr: 2.46e-06, D_lr: 2.46e-06, loss: 0.221578, D_Origin-Predictor_loss: 0.221294, mask_loss: 0.221578
+eta: 1h 27min, epoch: 42, iter: 23200 , time: 3.393 s/iter, lr: 1.82e-06, D_lr: 1.82e-06, loss: 0.215531, D_Origin-Predictor_loss: 0.218699, mask_loss: 0.215531
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 8192.0
+eta: 1h 23min, epoch: 42, iter: 23300 , time: 3.467 s/iter, lr: 1.26e-06, D_lr: 1.26e-06, loss: 0.229230, D_Origin-Predictor_loss: 0.220274, mask_loss: 0.229230
+eta: 1h 16min, epoch: 42, iter: 23400 , time: 3.394 s/iter, lr: 7.99e-07, D_lr: 7.99e-07, loss: 0.217341, D_Origin-Predictor_loss: 0.219104, mask_loss: 0.217341
+epoch: 42, val_miou: 0.1626(0.1679), 0: 0.5616, 1: 0.3247, 2: 0.5384, 3: 0.0833, 4: 0.1218, 5: 0.1890, 6: 0.0088, 7: 0.0944, 8: 0.3108, 9: 0.0876, 10: 0.0649, 11: 0.1508, 12: 0.0453, 13: 0.4321, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0422, 18: 0.0346
+eta: 1h 10min, epoch: 42, iter: 23500 , time: 3.396 s/iter, lr: 4.42e-07, D_lr: 4.42e-07, loss: 0.220134, D_Origin-Predictor_loss: 0.219079, mask_loss: 0.220134
+eta: 1h 06min, epoch: 43, iter: 23600 , time: 3.492 s/iter, lr: 1.92e-07, D_lr: 1.92e-07, loss: 0.215504, D_Origin-Predictor_loss: 0.218949, mask_loss: 0.215504
+eta: 1h 00min, epoch: 43, iter: 23700 , time: 3.479 s/iter, lr: 5.22e-08, D_lr: 5.22e-08, loss: 0.218356, D_Origin-Predictor_loss: 0.219499, mask_loss: 0.218356
+eta: 0h 53min, epoch: 43, iter: 23800 , time: 3.393 s/iter, lr: 2.00e-05, D_lr: 2.00e-05, loss: 0.229635, D_Origin-Predictor_loss: 0.223534, mask_loss: 0.229635
+eta: 0h 48min, epoch: 43, iter: 23900 , time: 3.394 s/iter, lr: 1.99e-05, D_lr: 1.99e-05, loss: 0.224845, D_Origin-Predictor_loss: 0.226969, mask_loss: 0.224845
+eta: 0h 42min, epoch: 43, iter: 24000 , time: 3.396 s/iter, lr: 1.97e-05, D_lr: 1.97e-05, loss: 0.226958, D_Origin-Predictor_loss: 0.227677, mask_loss: 0.226958
+epoch: 43, val_miou: 0.1610(0.1679), 0: 0.5565, 1: 0.3136, 2: 0.5553, 3: 0.0890, 4: 0.0903, 5: 0.1642, 6: 0.0067, 7: 0.0896, 8: 0.3161, 9: 0.0814, 10: 0.0700, 11: 0.1577, 12: 0.0545, 13: 0.4505, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0125, 18: 0.0506
+eta: 0h 38min, epoch: 44, iter: 24100 , time: 3.534 s/iter, lr: 1.94e-05, D_lr: 1.94e-05, loss: 0.225585, D_Origin-Predictor_loss: 0.226665, mask_loss: 0.225585
+eta: 0h 31min, epoch: 44, iter: 24200 , time: 3.391 s/iter, lr: 1.90e-05, D_lr: 1.90e-05, loss: 0.225099, D_Origin-Predictor_loss: 0.224197, mask_loss: 0.225099
+eta: 0h 25min, epoch: 44, iter: 24300 , time: 3.391 s/iter, lr: 1.85e-05, D_lr: 1.85e-05, loss: 0.228346, D_Origin-Predictor_loss: 0.222983, mask_loss: 0.228346
+Gradient overflow.  Skipping step, loss scaler 0 reducing loss scale to 8192.0
+eta: 0h 19min, epoch: 44, iter: 24400 , time: 3.392 s/iter, lr: 1.79e-05, D_lr: 1.79e-05, loss: 0.213606, D_Origin-Predictor_loss: 0.221418, mask_loss: 0.213606
+eta: 0h 14min, epoch: 44, iter: 24500 , time: 3.504 s/iter, lr: 1.72e-05, D_lr: 1.72e-05, loss: 0.224280, D_Origin-Predictor_loss: 0.226119, mask_loss: 0.224280
+eta: 0h 08min, epoch: 45, iter: 24600 , time: 3.463 s/iter, lr: 1.64e-05, D_lr: 1.64e-05, loss: 0.213103, D_Origin-Predictor_loss: 0.223005, mask_loss: 0.213103
+epoch: 45, val_miou: 0.1683(0.1683), 0: 0.5704, 1: 0.3270, 2: 0.5741, 3: 0.0928, 4: 0.1390, 5: 0.1804, 6: 0.0120, 7: 0.0948, 8: 0.3140, 9: 0.0824, 10: 0.0771, 11: 0.1457, 12: 0.0489, 13: 0.4237, 14: 0.0000, 15: 0.0000, 16: 0.0000, 17: 0.0678, 18: 0.0474
+eta: 0h 02min, epoch: 45, iter: 24700 , time: 3.393 s/iter, lr: 1.56e-05, D_lr: 1.56e-05, loss: 0.220400, D_Origin-Predictor_loss: 0.223940, mask_loss: 0.220400
+End! epoch0 max metrics: 0.1683

@@ -321,7 +321,7 @@ def train_net(net,
                 if cfg.TRAIN.SAVE_ALL:
                     torch.save(net.state_dict(), os.path.join(dir_cp, 'CP{}_{}.pth'.format(epoch + 1, iter_cnt)))      
                 torch.save(net.state_dict(), os.path.join(dir_cp, 'last_iter.pth'))
-                torch.save(net.state_dict(), os.path.join(dir_cp, 'epoch_{}.pth'.format(epoch + 1)))
+                # torch.save(net.state_dict(), os.path.join(dir_cp, 'epoch_{}.pth'.format(epoch + 1)))
                 if max_metrics_iter_cnt == "epoch{}_{}".format(epoch+1, iter_cnt):
                     torch.save(net.state_dict(), os.path.join(dir_cp, 'best_iter.pth'))
                 # save state
